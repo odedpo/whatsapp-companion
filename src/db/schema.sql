@@ -1,7 +1,7 @@
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  phone VARCHAR(20) UNIQUE NOT NULL,
+  phone VARCHAR(50) UNIQUE NOT NULL,
   name VARCHAR(100),
   timezone VARCHAR(50) DEFAULT 'America/Los_Angeles',
   wake_time TIME,
