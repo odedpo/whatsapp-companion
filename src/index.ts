@@ -41,7 +41,7 @@ async function main() {
   app.use('/', webhookRouter);
 
   // Start server
-  const server = app.listen(config.port, () => {
+  const server = app.listen(config.port, '0.0.0.0', () => {
     console.log(`Server running on port ${config.port}`);
     console.log(`Webhook URL: http://localhost:${config.port}/webhook`);
   });
