@@ -32,11 +32,21 @@ export async function handleOnboarding(
   message: string
 ): Promise<string> {
   const step = user.onboarding_step || 'start';
+  const lowerMessage = message.trim().toLowerCase();
+
+  // Handle greetings at any step
+  if (isGreeting(lowerMessage) && step === 'start') {
+    await updateUser(user.id, { onboarding_step: 'awaiting_name' });
+    return ONBOARDING_PROMPTS.welcome;
+  }
 
   switch (step) {
     case 'start':
-      await updateUser(user.id, { onboarding_step: 'awaiting_goal' });
+      await updateUser(user.id, { onboarding_step: 'awaiting_name' });
       return ONBOARDING_PROMPTS.welcome;
+
+    case 'awaiting_name':
+      return await handleNameInput(user, message);
 
     case 'awaiting_goal':
       return await handleGoalInput(user, message);
@@ -59,8 +69,33 @@ export async function handleOnboarding(
   }
 }
 
+function isGreeting(message: string): boolean {
+  const greetings = ['hi', 'hello', 'hey', 'yo', 'sup', 'hola', 'start', 'begin'];
+  return greetings.includes(message) || message.length < 4;
+}
+
+async function handleNameInput(user: User, message: string): Promise<string> {
+  const name = message.trim();
+
+  // If it's still a greeting, prompt again
+  if (isGreeting(name.toLowerCase())) {
+    return "What's your name? Just your first name is fine.";
+  }
+
+  // Extract first name (capitalize properly)
+  const firstName = name.split(' ')[0];
+  const capitalizedName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+
+  await updateUser(user.id, {
+    name: capitalizedName,
+    onboarding_step: 'awaiting_goal',
+  });
+
+  return ONBOARDING_PROMPTS.name_received(capitalizedName);
+}
+
 async function handleGoalInput(user: User, message: string): Promise<string> {
-  const goal = message.trim().toLowerCase();
+  const goal = message.trim();
 
   // Store goal temporarily (we'll use it when creating contract)
   await updateUser(user.id, {

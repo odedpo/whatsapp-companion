@@ -93,11 +93,19 @@ ${context.additionalContext}
 export const ONBOARDING_PROMPTS = {
   welcome: `Welcome. I'm your behavioral enforcer.
 
-I'm not here to motivate you. I'm here to engineer your success using behavioral economics.
+I'm not here to motivate you. I'm here to engineer your success through behavioral economics.
 
 One goal at a time. No negotiation. No excuses.
 
-What's the ONE goal you're committing to? (e.g., "fat loss", "fitness", "discipline")`,
+First, what's your name?`,
+
+  name_received: (name: string) => `${name}. Got it.
+
+Now, what's the ONE goal you're committing to?
+
+Examples: "fat loss", "fitness", "discipline", "quit smoking"
+
+Be specific about what you want to achieve.`,
 
   goal_received: (goal: string) => `Got it. Your goal is: ${goal}
 
