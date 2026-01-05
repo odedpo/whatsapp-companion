@@ -201,7 +201,7 @@ export async function upsertDailyLog(
 
 export async function getRecentLogs(userId: string, days: number = 7): Promise<DailyLog[]> {
   return query<DailyLog>(
-    `SELECT * FROM daily_logs WHERE user_id = $1 AND date >= CURRENT_DATE - $2 ORDER BY date DESC`,
+    `SELECT * FROM daily_logs WHERE user_id = $1 AND date >= CURRENT_DATE - INTERVAL '1 day' * $2 ORDER BY date DESC`,
     [userId, days]
   );
 }
